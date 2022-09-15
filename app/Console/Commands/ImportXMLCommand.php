@@ -41,19 +41,15 @@ class ImportXMLCommand extends Command
             return;
         }
 
-        try {
-            $offer = (new OfferParser($filePath))->getOfferList()->toArray();
+        $parser = (new OfferParser($filePath));
+        $count = $parser->getCount();
 
-            $count = count($offer);
-            $bar = $this->output->createProgressBar($count);
+        $offerList = $parser->getOfferList()['offer'];
+        $bar = $this->output->createProgressBar($count);
 
-            $bar->start();
-            $manager->importOffer($offer);
-            $bar->finish();
-
-            $this->info(PHP_EOL . $count . ' items imported successfully');
-        } catch (\Exception $e) {
-            $this->info($e->getMessage());
-        }
+        $bar->start();
+        $manager->importOffer($offerList, $count);
+        $bar->finish();
+        $this->info(PHP_EOL . $count . ' items imported successfully');
     }
 }

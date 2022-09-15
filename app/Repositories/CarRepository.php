@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\DB;
 class CarRepository implements CarRepositoryInterface
 {
     /**
+     * First remove records that are not present in the import data
+     * Then update existing records or create new once
+     *
      * @param array $collection
      * @return void
      */
@@ -22,13 +25,25 @@ class CarRepository implements CarRepositoryInterface
         $this->updateOrInsert($collection);
     }
 
+
     /**
+     * Create single record
      *
+     * @param array $car
+     * @return void
+     */
+    public function importCar(array $car)
+    {
+        Car::updateOrCreate(['car_id' => $car['car_id']], $car);
+    }
+
+    /**
+     * Update existing records or create new ones
      *
      * @param array $collection
      * @return void
      */
-    public function updateOrInsert(array $collection): void
+    private function updateOrInsert(array $collection): void
     {
         DB::transaction(function () use ($collection) {
             foreach ($collection as $car) {
@@ -43,7 +58,7 @@ class CarRepository implements CarRepositoryInterface
      * @param array $carIds
      * @return void
      */
-    public function delete(array $carIds)
+    private function delete(array $carIds)
     {
         Car::whereNotIn('car_id', $carIds)->delete();
     }

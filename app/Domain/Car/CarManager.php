@@ -4,22 +4,32 @@ declare(strict_types=1);
 
 namespace App\Domain\Car;
 
-use App\Domain\BaseManager;
+use App\Models\Car;
+use App\Services\OfferTransformer;
 
-class CarManager extends BaseManager
+class CarManager
 {
     /**
      * @var CarRepositoryInterface
      */
     private CarRepositoryInterface $carRepository;
+    private OfferTransformer $offerTransformer;
 
-    public function __construct(CarRepositoryInterface $carRepository)
+    public function __construct(CarRepositoryInterface $carRepository, OfferTransformer $offerTransformer)
     {
         $this->carRepository = $carRepository;
+        $this->offerTransformer = $offerTransformer;
     }
 
-    public function importOffer(array $offers)
+    public function importOffer(array $offers, int $count): void
     {
-        $this->carRepository->importCarsCollection($offers);
+        if ($count === 1) {
+            $car = $this->offerTransformer->transform($offers);
+            $this->carRepository->importCar($car);
+            return;
+        }
+        $cars = $this->offerTransformer->transformCollection($offers);
+        $this->carRepository->importCarsCollection($cars);
     }
+
 }
