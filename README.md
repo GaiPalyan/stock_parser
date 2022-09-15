@@ -18,8 +18,13 @@ $ sail php artisan import:xml -p, --path[=PATH]
 
 If you do not pass the path, the default will be used.
 
-DEFAULT_FILE_PATH = '/var/local/data.xml';
-
+```php
+class ImportXMLCommand extends Command
+{
+    DEFAULT_FILE_PATH = '/var/local/data.xml';
+    
+    ...
+```
 ~~~
 volumes:
     - '.:/var/www/html'
