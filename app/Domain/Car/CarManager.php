@@ -20,7 +20,7 @@ class CarManager
     }
 
     /**
-     * Dispatch model creation methods by count
+     * Dispatch model creation methods by offers count
      *
      * @param array $offers
      * @param int $count
