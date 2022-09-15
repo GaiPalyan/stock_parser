@@ -3,8 +3,6 @@
 declare(strict_types=1);
 
 namespace App\Domain\Car;
-
-use App\Models\Car;
 use App\Services\OfferTransformer;
 
 class CarManager
@@ -21,6 +19,13 @@ class CarManager
         $this->offerTransformer = $offerTransformer;
     }
 
+    /**
+     * Dispatch model creation methods by count
+     *
+     * @param array $offers
+     * @param int $count
+     * @return void
+     */
     public function importOffer(array $offers, int $count): void
     {
         if ($count === 1) {
@@ -28,8 +33,8 @@ class CarManager
             $this->carRepository->importCar($car);
             return;
         }
+
         $cars = $this->offerTransformer->transformCollection($offers);
         $this->carRepository->importCarsCollection($cars);
     }
-
 }
